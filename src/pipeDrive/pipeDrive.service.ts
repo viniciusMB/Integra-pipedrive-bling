@@ -7,7 +7,7 @@ export class PipeDriveService {
     const defaultClient = Pipedrive.ApiClient.instance;
     const apiToken = defaultClient.authentications.api_key;
 
-    apiToken.apiKey = 'c168dff19907f8f4d23c3828d35d9af50fcc8fed';
+    apiToken.apiKey = process.env.PIPEDRIVE_API_KEY;
 
     const api = new Pipedrive.DealsApi();
     const opts = { status: 'won' };

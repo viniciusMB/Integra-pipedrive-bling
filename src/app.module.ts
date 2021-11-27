@@ -3,19 +3,22 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+import { CronService } from './cron/cron.service';
+import { ConfigModule } from '@nestjs/config';
+
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { DealsModule } from './deals/deals.module';
 import { PipeDriveModule } from './pipeDrive/pipeDrive.module';
-import { CronService } from 'cron/cron.service';
+
 import { PipeDriveService } from './pipeDrive/pipeDrive.service';
 
 @Module({
   imports: [
     PipeDriveModule,
     ScheduleModule.forRoot(),
-    MongooseModule.forRoot(
-      'mongodb+srv://viniciusMB:58274169@integraapi.5dhn5.mongodb.net/integraAPI?retryWrites=true&w=majority',
-    ),
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.MONGO_KEY),
     DealsModule,
   ],
   controllers: [AppController],
