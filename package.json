@@ -37,7 +37,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.4.23",
+    "xmlbuilder2": "^3.0.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

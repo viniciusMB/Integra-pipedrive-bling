@@ -19,12 +19,18 @@ import { BlingModule } from './bling/bling.module';
   imports: [
     PipeDriveModule,
     DealsModule,
+    BlingModule,
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_KEY),
-    BlingModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CronService, PipeDriveModule, DealsModule],
+  providers: [
+    AppService,
+    CronService,
+    PipeDriveModule,
+    BlingModule,
+    DealsModule,
+  ],
 })
 export class AppModule {}

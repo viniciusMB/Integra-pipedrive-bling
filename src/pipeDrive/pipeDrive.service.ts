@@ -17,7 +17,7 @@ export class PipeDriveService {
 
     /*  Adicionando um valor que sempre será diferente do won_time do último deal,
         assim todos os deals serão salvos no banco (seguindo a lógica do cron.service) */
-    cleanedDeals.push({ won_time: 'xxxxxxxxxx xxxxxxxx' });
+    // cleanedDeals.push({ won_time: 'xxxxxxxxxx xxxxxxxx' });
 
     return cleanedDeals;
   }
