@@ -1,12 +1,9 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { delay } from 'rxjs';
-import { BlingController } from 'src/bling/bling.controller';
+
 import { BlingService } from 'src/bling/bling.service';
-import { IPostDeal } from 'src/bling/interfaces/IpostDeal';
-import { DealsService } from 'src/deals/deals.service';
-import { CreateDealDto } from 'src/deals/dto/create-deal.dto';
-import { UpdateDealDto } from 'src/deals/dto/update-deal.dto';
+
+import { isNotPostedOnBling } from 'src/dealsOnBling/isNotPostedOnBling';
 import { PipeDriveService } from 'src/pipeDrive/pipeDrive.service';
 
 @Injectable()
@@ -15,100 +12,36 @@ export class CronService {
     @Inject(forwardRef(() => PipeDriveService))
     private readonly pipeDriveService: PipeDriveService,
 
-    @Inject(forwardRef(() => DealsService))
-    private readonly dealService: DealsService,
-
     @Inject(forwardRef(() => BlingService))
     private readonly blingService: BlingService,
 
-    @Inject(forwardRef(() => BlingController))
-    private readonly blingController: BlingController,
+    @Inject(forwardRef(() => isNotPostedOnBling))
+    private readonly isNotPostedOnBling: isNotPostedOnBling,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  // Para testar o código altere a função do cron. Recomendo o .EVERY_MINUTE ou .EVERY_5_MINUTES, dependendo da quantidade de deals no pipedrive.
+  @Cron(CronExpression.EVERY_MINUTE) // Idealmente, essa rotina rodaria 1 vez ao dia
   async runEveryDay() {
     console.log('Checking for deals...');
+
+    // Pega todos os deals com status won
     const deals = await this.pipeDriveService.getDeals();
 
-    deals.map(async (deal) => {
+    // Para cada deal, posta no bling, no banco e atualiza o status do deal baseado no dia
+    for (const deal of deals) {
       const wonDay: string = deal.won_time.split(' ')[0];
 
-      const response = await this.dealService.findByDate(wonDay);
-      const postDealDto: IPostDeal = {
-        pedido: {
-          numero: deal.id,
-          cliente: {
-            id: deal.user_id.id,
-            nome: deal.user_id.name,
-            email: deal.user_id.email,
-          },
-          volumes: {
-            volume: {
-              servico: 'Mandou chegou',
-            },
-          },
-          parcela: {
-            vlr: deal.value,
-          },
-          item: {
-            qtde: 1,
-            vlr_unit: deal.value,
-            codigo: 2,
-            descricao: 'produto postado por vinicius :)',
-            un: '1',
-          },
-        },
-      };
+      // Se o deal não houver sido postado no bling, retorna null
+      const isPostedOnBling = await this.blingService.getDealByID(deal.id);
 
-      if (response == null) {
-        try {
-          const createDealDto: CreateDealDto = {
-            totalValue: deal.value,
-            wonDay: wonDay,
-          };
-
-          const dealCreated = await this.dealService.create(createDealDto);
-          console.log(dealCreated);
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        const updateDealDto: UpdateDealDto = {
-          totalValue: response.totalValue + deal.value,
-          wonDay: wonDay,
-        };
-
-        console.log(await this.dealService.updateTotalValue(updateDealDto));
+      if (!isPostedOnBling) {
+        const result = await this.isNotPostedOnBling.execute(wonDay, deal);
+        console.log(result);
+        return result;
       }
-
-      /*if (wonDay != dealCollection.wonDay) {
-        const response = await this.dealService.findByDate(wonDay);
-
-        if (response == null) {
-          if (dealCollection.wonDay != undefined) {
-            const createDealDto: CreateDealDto = dealCollection;
-
-            await this.dealService.create(createDealDto);
-
-            dealCollection.wonDay = wonDay;
-            dealCollection.totalValue = deal.value;
-          } else {
-            const createDealDto: CreateDealDto = {
-              wonDay: wonDay,
-              totalValue: deal.value,
-            };
-
-            await this.dealService.create(createDealDto);
-          }
-        } else {
-          dealCollection.wonDay = wonDay;
-          dealCollection.totalValue = response.totalValue + deal.value;
-
-          const updateDealDto: UpdateDealDto = dealCollection;
-
-          this.dealService.updateTotalValue(updateDealDto);
-        }
-      }*/
-    });
+      console.log(
+        `Deal already posted on Bling \n Deal: \n ${isPostedOnBling.pedido.numero}`,
+      );
+    }
   }
 }

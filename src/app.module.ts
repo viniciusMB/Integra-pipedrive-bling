@@ -14,11 +14,13 @@ import { PipeDriveModule } from './pipeDrive/pipeDrive.module';
 import { PipeDriveService } from './pipeDrive/pipeDrive.service';
 import { DealsService } from './deals/deals.service';
 import { BlingModule } from './bling/bling.module';
+import { DealsOnBlingModule } from './dealsOnBling/dealsOnBling.module';
 
 @Module({
   imports: [
     PipeDriveModule,
     DealsModule,
+    DealsOnBlingModule,
     BlingModule,
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
@@ -30,6 +32,7 @@ import { BlingModule } from './bling/bling.module';
     CronService,
     PipeDriveModule,
     BlingModule,
+    DealsOnBlingModule,
     DealsModule,
   ],
 })

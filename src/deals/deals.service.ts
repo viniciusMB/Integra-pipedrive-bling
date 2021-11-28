@@ -23,7 +23,7 @@ export class DealsService {
   }
 
   async findByDate(date: string) {
-    return await this.dealModel.findOne({ wonDay: date }).exec();
+    return this.dealModel.findOne({ wonDay: date });
   }
 
   async updateTotalValue(updateDealDto: UpdateDealDto) {
