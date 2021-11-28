@@ -28,7 +28,10 @@ export class DealsService {
 
   async updateTotalValue(updateDealDto: UpdateDealDto) {
     await this.dealModel
-      .updateOne({ wonDay: updateDealDto.wonDay }, updateDealDto)
+      .updateOne(
+        { wonDay: updateDealDto.wonDay },
+        { totalValue: updateDealDto.totalValue },
+      )
       .exec();
 
     return this.findByDate(updateDealDto.wonDay);

@@ -12,16 +12,19 @@ import { DealsModule } from './deals/deals.module';
 import { PipeDriveModule } from './pipeDrive/pipeDrive.module';
 
 import { PipeDriveService } from './pipeDrive/pipeDrive.service';
+import { DealsService } from './deals/deals.service';
+import { BlingModule } from './bling/bling.module';
 
 @Module({
   imports: [
     PipeDriveModule,
+    DealsModule,
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_KEY),
-    DealsModule,
+    BlingModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CronService, PipeDriveService],
+  providers: [AppService, CronService, PipeDriveModule, DealsModule],
 })
 export class AppModule {}

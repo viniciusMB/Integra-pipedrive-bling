@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Pipedrive } from 'pipedrive';
+import * as Pipedrive from 'pipedrive';
 
 @Injectable()
 export class PipeDriveService {
