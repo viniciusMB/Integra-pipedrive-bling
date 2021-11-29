@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BlingController } from './bling.controller';
+import { BlingDto } from './bling.dto';
 import { BlingService } from './bling.service';
 
 import { DealsOnBlingService } from 'src/dealsOnBling/dealsOnbling.service';
@@ -14,7 +14,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [],
-  providers: [BlingService, BlingController, DealsOnBlingService],
-  exports: [BlingService, BlingController],
+  providers: [BlingService, BlingDto, DealsOnBlingService],
+  exports: [BlingService, BlingDto],
 })
 export class BlingModule {}

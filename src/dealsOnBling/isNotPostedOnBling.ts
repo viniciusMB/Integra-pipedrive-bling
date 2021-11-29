@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { BlingController } from 'src/bling/bling.controller';
+import { BlingDto } from 'src/bling/bling.dto';
 import { BlingService } from 'src/bling/bling.service';
 import { IPostDeal } from 'src/bling/interfaces/IpostDeal';
 import { DealsService } from 'src/deals/deals.service';
@@ -13,14 +13,14 @@ export class isNotPostedOnBling {
     private readonly dealService: DealsService,
     @Inject(forwardRef(() => BlingService))
     private readonly blingService: BlingService,
-    @Inject(forwardRef(() => BlingController))
-    private readonly blingController: BlingController,
+    @Inject(forwardRef(() => BlingDto))
+    private readonly blingDto: BlingDto,
   ) {}
   async execute(wonDay: string, deal) {
     // Se o deal não existir no banco vai retornar null
     const response = await this.dealService.findByDate(wonDay);
 
-    const postDealDto: IPostDeal = this.blingController.FormatPostDeal(deal);
+    const postDealDto: IPostDeal = this.blingDto.FormatPostDeal(deal);
 
     // Precisamos esperar um pouco para não bater o limite de requisições :/
     const waitFor = (delay) =>

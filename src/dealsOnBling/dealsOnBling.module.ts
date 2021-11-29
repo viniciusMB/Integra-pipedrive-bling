@@ -7,7 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { isNotPostedOnBling } from './isNotPostedOnBling';
 import { DealsService } from 'src/deals/deals.service';
 import { BlingService } from 'src/bling/bling.service';
-import { BlingController } from 'src/bling/bling.controller';
+import { BlingDto } from 'src/bling/bling.dto';
 import { DealSchema } from 'src/deals/schemas/deal.schema';
 
 @Module({
@@ -21,7 +21,7 @@ import { DealSchema } from 'src/deals/schemas/deal.schema';
   providers: [
     DealsOnBlingService,
     isNotPostedOnBling,
-    BlingController,
+    BlingDto,
     DealsService,
     BlingService,
   ],

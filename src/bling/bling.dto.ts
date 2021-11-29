@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IPostDeal } from './interfaces/IpostDeal';
 
 @Injectable()
-export class BlingController {
+export class BlingDto {
   FormatPostDeal(deal: any): IPostDeal {
     const postDealDto: IPostDeal = {
       pedido: {
